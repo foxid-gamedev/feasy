@@ -1,37 +1,30 @@
 #pragma once
 
+#include "feasy.hpp"
+
 #include "containers/feasy_string.hpp"
 #include "core/ref.hpp"
-#include "feasy.hpp"
 
 namespace feasy
 {
-
-    struct FEASY_API ApplicationConfig
+    struct PlatformState
     {
-        i32 width = 1280;
-        i32 height = 720;
+        void *handle;
+        i32 width;
+        i32 height;
         String name;
     };
 
-    class FEASY_API Platform
+    class Platform
     {
     public:
-        explicit Platform(const ApplicationConfig &appConfig);
-        ~Platform();
+        void create(i32 width, i32 height, const String &app_name);
+        void destroy();
 
-        void initialize();
-
-        void resetEvent() const;
-        b8 pollEvent() const;
-        b8 isCloseEvent() const;
-
-        const ApplicationConfig &getAppConfig() const { return *m_appConfig; }
+        const PlatformState &getState() const { return *m_state; }
 
     private:
-        Ref<ApplicationConfig> m_appConfig{nullptr};
-        void *m_windowHandle{nullptr};
-        SDL_Event m_event;
+        Ref<PlatformState> m_state;
     };
 
 }

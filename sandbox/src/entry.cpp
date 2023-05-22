@@ -10,7 +10,7 @@ public:
 
     void handleInput() override
     {
-        }
+    }
 
     void
     update(feasy::f32 delta) override

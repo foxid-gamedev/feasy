@@ -9,7 +9,7 @@
                 "${SDL_SDK}/include"
             ],
             "defines": [
-                "_DEBUG",
+                "DEBUG",
                 "UNICODE",
                 "_UNICODE",
                 "FEASY_EXPORT"

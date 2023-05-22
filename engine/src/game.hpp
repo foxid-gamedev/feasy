@@ -3,14 +3,17 @@
 
 #include "feasy.hpp"
 
-class Platform;
-class Application;
-
 #include "containers/feasy_string.hpp"
-#include "core/application.hpp"
 
 namespace feasy
 {
+    struct FEASY_API AppConfig
+    {
+        i32 width;
+        i32 height;
+        String name;
+    };
+
     class FEASY_API Game
     {
     public:
@@ -23,9 +26,9 @@ namespace feasy
         virtual void update(f32 delta) = 0;
         virtual void render() = 0;
 
-        const Application &get_app() { return *m_app; }
+        const AppConfig &getAppConfig() const { return m_config; }
 
     private:
-        Ref<Application> m_app;
+        AppConfig m_config;
     };
 }

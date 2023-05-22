@@ -1,136 +1,74 @@
 #include "feasy_string.hpp"
 
+#include <string>
+
 using namespace feasy;
 
-#include <cstring>
-
-String::String()
-    : m_data(nullptr), m_length(0)
+struct feasy::_StringImpl
 {
+    std::string str;
+};
+
+feasy::String::String()
+{
+    m_string = new _StringImpl{};
 }
 
-String::String(const char *str)
-    : m_data(nullptr), m_length(0)
+feasy::String::String(const char *str)
 {
-    if (str)
-    {
-        m_length = strlen(str);
-        m_data = new char[m_length + 1];
-        strcpy(m_data, str);
-    }
+    m_string = new _StringImpl{str};
 }
 
-String::String(const String &other)
-    : m_data(nullptr), m_length(other.m_length)
+feasy::String::String(const String &other)
 {
-    if (other.m_data)
-    {
-        m_data = new char[m_length + 1];
-        strcpy(m_data, other.m_data);
-    }
+    m_string = new _StringImpl{other.m_string->str};
 }
 
-String &String::operator=(const String &other)
+String &feasy::String::operator=(const String &other)
+{
+    m_string = new _StringImpl{other.m_string->str};
+    return *this;
+}
+
+feasy::String::String(String &&other) noexcept
+{
+    m_string = new _StringImpl{other.m_string->str};
+    delete other.m_string;
+    other.m_string = nullptr;
+}
+
+String &feasy::String::operator=(String &&other) noexcept
 {
     if (this != &other)
     {
-        delete[] m_data;
-        m_length = other.m_length;
-        if (other.m_data)
-        {
-            m_data = new char[m_length + 1];
-            strcpy(m_data, other.m_data);
-        }
-        else
-        {
-            m_data = nullptr;
-        }
+        delete m_string;
+        m_string = other.m_string;
+        other.m_string = nullptr;
     }
+
     return *this;
 }
 
-String::String(String &&other) noexcept
-    : m_data(other.m_data), m_length(other.m_length)
+feasy::String::~String()
 {
-    other.m_data = nullptr;
-    other.m_length = 0;
+    delete m_string;
+    m_string = nullptr;
 }
 
-String &String::operator=(String &&other) noexcept
+const char *feasy::String::c_str() const
 {
-    if (this != &other)
-    {
-        delete[] m_data;
-        m_data = other.m_data;
-        m_length = other.m_length;
-        other.m_data = nullptr;
-        other.m_length = 0;
-    }
-    return *this;
+    return m_string->str.c_str();
 }
 
-String::~String()
+String feasy::String::operator+(const String &other) const
 {
-    delete[] m_data;
-}
-
-const char *String::c_str() const
-{
-    return m_data;
-}
-
-String &String::operator=(const char *str)
-{
-    delete[] m_data;
-    if (str)
-    {
-        m_length = strlen(str);
-        m_data = new char[m_length + 1];
-        strcpy(m_data, str);
-    }
-    else
-    {
-        m_data = nullptr;
-        m_length = 0;
-    }
-    return *this;
-}
-
-String String::operator+(const String &other) const
-{
-    size_t newLength = m_length + other.m_length;
-    char *newData = new char[newLength + 1];
-
-    if (m_data)
-    {
-        strcpy(newData, m_data);
-    }
-    if (other.m_data)
-    {
-        strcat(newData, other.m_data);
-    }
-
-    String result(newData);
-    delete[] newData;
+    String result(*this);
+    result += other;
     return result;
 }
 
-String &String::operator+=(const String &other)
+String &feasy::String::operator+=(const String &other)
 {
-    size_t newLength = m_length + other.m_length;
-    char *newData = new char[newLength + 1];
-
-    if (m_data)
-    {
-        strcpy(newData, m_data);
-    }
-    if (other.m_data)
-    {
-        strcat(newData, other.m_data);
-    }
-
-    delete[] m_data;
-    m_data = newData;
-    m_length = newLength;
+    m_string->str += other.m_string->str;
     return *this;
 }

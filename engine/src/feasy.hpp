@@ -29,11 +29,20 @@ namespace feasy
     using f32 = float;
     using f64 = double;
 
-    // template <typename T>
-    // using Ref = std::shared_ptr<T>;
-    // template <typename T, typename... Args>
-    // __forceinline std::shared_ptr<T> createRef(Args &&...args)
-    // {
-    //     return std::make_shared<T>(std::forward<Args>(args)...);
-    // }
+    class Logger;
+
 }
+
+#include "core/logger.hpp"
+
+// #define STATIC_ASSERT(condition) static_assert(condition, #condition)
+
+// #define ASSERT(condition)                                                                                \
+//     do                                                                                                   \
+//     {                                                                                                    \
+//         if (!(condition))                                                                                \
+//         {                                                                                                \
+//             logger::instance->log(LogLevel::ERROR, "Assertion failed: " #condition, __FILE__, __LINE__); \
+//             std::terminate();                                                                            \
+//         }                                                                                                \
+//     } while (false)

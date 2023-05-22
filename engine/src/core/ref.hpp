@@ -9,75 +9,79 @@ namespace feasy
 	class FEASY_API Ref
 	{
 	public:
-		Ref() : m_ptr(nullptr), m_refCount(nullptr) {}
-		explicit Ref(T *ptr) : m_ptr(ptr), m_refCount(new size_t(1)) {}
-		Ref(const Ref<T> &other) : m_ptr(other.m_ptr), m_refCount(other.m_refCount)
+		template <typename... Args>
+		explicit Ref(Args &&...args)
+			: m_ptr(new T(std::forward<Args>(args)...))
 		{
-			if (m_refCount)
-				++(*m_refCount);
 		}
-		Ref(Ref<T> &&other) noexcept : m_ptr(other.m_ptr), m_refCount(other.m_refCount)
+
+		Ref(const Ref &other)
+			: m_ptr(new T(*other.m_ptr))
+		{
+		}
+
+		Ref(Ref &&other) noexcept
+			: m_ptr(other.m_ptr)
 		{
 			other.m_ptr = nullptr;
-			other.m_refCount = nullptr;
 		}
+
 		~Ref()
 		{
-			release();
+			delete m_ptr;
+			m_ptr = nullptr;
 		}
 
-		Ref<T> &operator=(const Ref<T> &other)
+		Ref &operator=(const Ref &other)
 		{
 			if (this != &other)
 			{
-				release();
-				m_ptr = other.m_ptr;
-				m_refCount = other.m_refCount;
-				if (m_refCount)
-					++(*m_refCount);
+				delete m_ptr;
+				m_ptr = new T(*other.m_ptr);
 			}
 			return *this;
 		}
 
-		Ref<T> &operator=(Ref<T> &&other) noexcept
+		Ref &operator=(Ref &&other) noexcept
 		{
 			if (this != &other)
 			{
-				release();
+				delete m_ptr;
 				m_ptr = other.m_ptr;
-				m_refCount = other.m_refCount;
 				other.m_ptr = nullptr;
-				other.m_refCount = nullptr;
 			}
 			return *this;
 		}
 
-		T *get() const { return m_ptr; }
-		T &operator*() const { return *m_ptr; }
-		T *operator->() const { return m_ptr; }
-		explicit operator bool() const { return m_ptr != nullptr; }
+		T *get() const
+		{
+			return m_ptr;
+		}
+
+		T &operator*() const
+		{
+			return *m_ptr;
+		}
+
+		T *operator->() const
+		{
+			return m_ptr;
+		}
+
+		explicit operator bool() const
+		{
+			return m_ptr != nullptr;
+		}
+
+		// ... Restlicher Code der Klasse
 
 	private:
 		T *m_ptr;
-		size_t *m_refCount;
-
-		void release()
-		{
-			if (m_refCount)
-			{
-				--(*m_refCount);
-				if (*m_refCount == 0)
-				{
-					delete m_ptr;
-					delete m_refCount;
-				}
-			}
-		}
 	};
 
 	template <typename T, typename... Args>
 	Ref<T> createRef(Args &&...args)
 	{
-		return Ref<T>(new T(std::forward<Args>(args)...));
+		return Ref<T>(std::forward<Args>(args)...);
 	}
 }
