@@ -6,7 +6,7 @@
 
 using namespace feasy;
 
-SDL_Window *receive_window(Ref<PlatformState> state);
+SDL_Window *receive_window(const Ref<PlatformState> &state);
 
 void Platform::create(i32 width, i32 height, const String &app_name)
 {
@@ -20,7 +20,7 @@ void Platform::create(i32 width, i32 height, const String &app_name)
 
 	if (result != 0)
 	{
-		// FEASY_FATAL("Failed to initialize SDL: %s", SDL_GetError());
+		FEASY_LOG_FATAL("Failed to initialize SDL: %s", SDL_GetError());
 		return;
 	}
 
@@ -34,7 +34,7 @@ void Platform::create(i32 width, i32 height, const String &app_name)
 
 	if (window == nullptr)
 	{
-		// FEASY_FATAL("Failed to initialize Window: %s", SDL_GetError());
+		FEASY_LOG_FATAL("Failed to initialize Window: %s", SDL_GetError());
 		SDL_Quit();
 		return;
 	}
@@ -63,7 +63,7 @@ void Platform::destroy()
 	SDL_Quit();
 }
 
-SDL_Window *receive_window(Ref<PlatformState> state)
+SDL_Window *receive_window(const Ref<PlatformState> &state)
 {
 	void *handle = state->handle;
 	return reinterpret_cast<SDL_Window *>(handle);

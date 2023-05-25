@@ -9,58 +9,65 @@ namespace feasy
 	class FEASY_API Ref
 	{
 	public:
+		Ref()
+		{
+			m_ptr = new T();
+			m_count = new i32;
+			*m_count = 1;
+		}
+
 		template <typename... Args>
-		explicit Ref(Args &&...args)
-			: m_ptr(new T(std::forward<Args>(args)...))
+		Ref(Args &&...args)
 		{
-		}
-
-		Ref(const Ref &other)
-			: m_ptr(new T(*other.m_ptr))
-		{
-		}
-
-		Ref(Ref &&other) noexcept
-			: m_ptr(other.m_ptr)
-		{
-			other.m_ptr = nullptr;
+			m_ptr = new T(std::forward<Args>(args)...);
+			m_count = new i32;
+			*m_count = 1;
 		}
 
 		~Ref()
 		{
-			delete m_ptr;
-			m_ptr = nullptr;
+			decrement();
+		}
+
+		Ref(const Ref &other)
+		{
+			if (this == &other)
+				return;
+			m_ptr = other.m_ptr;
+			m_count = other.m_count;
+			increment();
+		}
+
+		Ref(Ref &&other) noexcept
+		{
+			m_ptr = other.m_ptr;
+			m_count = other.m_count;
+
+			other.m_ptr = nullptr;
+			other.m_count = nullptr;
 		}
 
 		Ref &operator=(const Ref &other)
 		{
-			if (this != &other)
-			{
-				delete m_ptr;
-				m_ptr = new T(*other.m_ptr);
-			}
+			if (this == &other)
+				return *this;
+
+			m_ptr = other.m_ptr;
+			m_count = other.m_count;
+			other.m_ptr = nullptr;
+			other.m_count = nullptr;
+
 			return *this;
 		}
 
 		Ref &operator=(Ref &&other) noexcept
 		{
-			if (this != &other)
-			{
-				delete m_ptr;
-				m_ptr = other.m_ptr;
-				other.m_ptr = nullptr;
-			}
+			m_ptr = other.m_ptr;
+			m_count = other.m_count;
+			other.m_ptr = nullptr;
+			other.m_count = nullptr;
+
 			return *this;
-		}
-
-		T *get() const
-		{
-			return m_ptr;
-		}
-
-		T &operator*() const
-		{
-			return *m_ptr;
 		}
 
 		T *operator->() const
@@ -68,16 +75,59 @@ namespace feasy
 			return m_ptr;
 		}
 
-		explicit operator bool() const
+		T &operator*()
 		{
-			return m_ptr != nullptr;
+			return *m_ptr;
 		}
 
-		// ... Restlicher Code der Klasse
+		const T &operator*() const
+		{
+			return *m_ptr;
+		}
 
 	private:
-		T *m_ptr;
+		void increment()
+		{
+			if (m_count == nullptr)
+			{
+				return;
+			}
+
+			(*m_count)++;
+		}
+
+		void decrement()
+		{
+			if (m_count == nullptr)
+			{
+				return;
+			}
+
+			(*m_count)--;
+
+			if (*m_count <= 0)
+			{
+				if (m_ptr == nullptr)
+				{
+					return;
+				}
+
+				delete m_ptr;
+				delete m_count;
+				m_ptr = nullptr;
+				m_count = nullptr;
+			}
+		}
+
+		mutable T *m_ptr;
+		mutable i32 *m_count;
 	};
+
+	template <typename T>
+	Ref<T> createRef()
+	{
+		return Ref<T>();
+	}
 
 	template <typename T, typename... Args>
 	Ref<T> createRef(Args &&...args)

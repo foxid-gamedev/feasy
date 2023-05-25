@@ -1,82 +1,31 @@
 #pragma once
 
-// #include "feasy.hpp"
+#include "feasy.hpp"
 
-// #include "containers/feasy_string.hpp"
-// #include "core/ref.hpp"
+namespace feasy
+{
+	namespace log
+	{
+		enum class Level
+		{
+			fatal = 0,
+			error = 1,
+			warn = 2,
+			debug = 3,
+			info = 4,
+			trace = 5
+		};
 
-// #include <iostream>
-// #include <fstream>
-
-// namespace feasy
-// {
-//     enum class LogLevel
-//     {
-//         FATAL,
-//         ERROR,
-//         WARN,
-//         INFO,
-//         DEBUG,
-//         TRACE
-//     };
-
-//     class FEASY_API Logger
-//     {
-//     public:
-//         static Logger *instance{nullptr};
-
-//         static void initialize(LogLevel level);
-//         static void shutdown();
-
-//         template <typename T>
-//         Logger &operator<<(const T &value)
-//         {
-//             m_file << value;
-//             std::cout << value;
-//             return *this;
-//         }
-
-//         Logger &operator<<(std::ostream &(*func)(std::ostream &));
-
-//         template <typename... Args>
-//         void logf(LogLevel msgLevel, const char *file, int line, const char *format, Args &&...args)
-//         {
-//             if (msgLevel <= logLevel)
-//             {
-//                 constexpr int MAX_BUFFER_SIZE = 512;
-//                 char buffer[MAX_BUFFER_SIZE];
-
-//                 int ret = std::snprintf(buffer, MAX_BUFFER_SIZE, format, std::forward<Args>(args)...);
-
-//                 if (ret >= 0 && ret < MAX_BUFFER_SIZE)
-//                 {
-//                     log(msgLevel, buffer, file, line);
-//                 }
-//                 else
-//                 {
-//                     log(LogLevel::ERROR, "Error formatting log message", __FILE__, __LINE__);
-//                 }
-//             }
-//         }
-
-//     private:
-//         std::ofstream m_file;
-//         LogLevel m_level;
-
-//         String logLevelToString(LogLevel level);
-//         void printLogMessage(const LogMessage &logMsg);
-//     };
-
-// // #define FEASY_LOG(logger, level, message) logger::instance->log(level, message, __FILE__, __LINE__)
-// #define FEASY_FATAL(message, ...) logger::instance->logf(LogLevel::FATAL, __FILE__, __LINE__, message, __VA_ARGS__)
-// #define FEASY_ERROR(message, ...) logger::instance->logf(LogLevel::ERROR, __FILE__, __LINE__, message, __VA_ARGS__)
-// #define FEASY_INFO(message, ...) logger::instance->logf(LogLevel::INFO, __FILE__, __LINE__, message, __VA_ARGS__)
-
-// #ifdef DEBUG
-// #define FEASY_DEBUG(message, ...) logger::instance->logf(LogLevel::DEBUG, __FILE__, __LINE__, message, __VA_ARGS__)
-// #else
-
-// #define FEASY_DEBUG(message, ...) ()
-// #define FEASY_TRACE(message, ...) logger::instance->logf(LogLevel::TRACE, __FILE__, __LINE__, message, __VA_ARGS__)
-
-// }
+		void FEASY_API _log(Level level, const char *msg, const char *file, i32 line, ...);
+	}
+}
+#define FEASY_LOG_FATAL(msg, ...) feasy::log::_log(feasy::log::Level::fatal, msg, __FILE__, __LINE__, ##__VA_ARGS__)
+#define FEASY_LOG_ERROR(msg, ...) feasy::log::_log(feasy::log::Level::error, msg, __FILE__, __LINE__, ##__VA_ARGS__)
+#define FEASY_LOG_WARN(msg, ...) feasy::log::_log(feasy::log::Level::warn, msg, __FILE__, __LINE__, ##__VA_ARGS__)
+#ifdef DEBUG
+#define FEASY_LOG_DEBUG(msg, ...) feasy::log::_log(feasy::log::Level::debug, msg, __FILE__, __LINE__, ##__VA_ARGS__)
+#else
+#define FEASY_LOG_DEBUG(msg, ...)
+#endif
+#define FEASY_LOG_INFO(msg, ...) feasy::log::_log(feasy::log::Level::info, msg, __FILE__, __LINE__, ##__VA_ARGS__)
+#define FEASY_LOG_TRACE(msg, ...) feasy::log::_log(feasy::log::Level::trace, msg, __FILE__, __LINE__, ##__VA_ARGS__)

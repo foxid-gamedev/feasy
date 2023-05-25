@@ -33,7 +33,7 @@ namespace feasy
 
 }
 
-#include "core/logger.hpp"
+// #include "core/logger.hpp"
 
 // #define STATIC_ASSERT(condition) static_assert(condition, #condition)
 

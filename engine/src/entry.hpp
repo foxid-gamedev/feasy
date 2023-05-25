@@ -2,7 +2,6 @@
 
 #include "feasy.hpp"
 
-#include "core/logger.hpp"
 #include "core/application.hpp"
 #include "game.hpp"
 

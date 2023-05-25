@@ -1,22 +1,10 @@
 #include "application.hpp"
 
-#include "platform/platform.hpp"
-// #include "core/logger.hpp"
-
-#include "ref.hpp"
+#include "core/logger.hpp"
 
 #include <SDL.h>
 
 using namespace feasy;
-
-struct feasy::ApplicationState
-{
-    Game *gameInstance;
-    b8 isRunning;
-    Ref<Platform> platform;
-    i32 width;
-    i32 height;
-};
 
 void Application::create(Game *gameInstance)
 {
@@ -26,11 +14,12 @@ void Application::create(Game *gameInstance)
 
     // Logger::initialize(LogLevel::DEBUG);
 
-    // FEASY_FATAL("test fatal msg: %f", 3.14f);
-    // FEASY_ERROR("test error msg: %f", 3.14f);
-    // FEASY_INFO("test info msg: %f", 3.14f);
-    // FEASY_DEBUG("test debug msg: %f", 3.14f);
-    // FEASY_TRACE("test fatal msg: %f", 3.14f);
+    FEASY_LOG_FATAL("test fatal msg: %f", 3.14f);
+    FEASY_LOG_ERROR("test error msg: %f", 3.14f);
+    FEASY_LOG_WARN("test warn msg: %f", 3.14f);
+    FEASY_LOG_INFO("test info msg: %f", 3.14f);
+    FEASY_LOG_DEBUG("test debug msg: %f", 3.14f);
+    FEASY_LOG_TRACE("test fatal msg: %f", 3.14f);
 
     m_appState->isRunning = true;
 

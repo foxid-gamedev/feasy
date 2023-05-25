@@ -2,12 +2,19 @@
 
 #include "feasy.hpp"
 #include "ref.hpp"
-
+#include "platform/platform.hpp"
 #include "game.hpp"
 
 namespace feasy
 {
-    struct ApplicationState;
+    struct ApplicationState
+    {
+        Game *gameInstance;
+        b8 isRunning;
+        Ref<Platform> platform;
+        i32 width;
+        i32 height;
+    };
 
     class FEASY_API Application
     {
@@ -16,6 +23,6 @@ namespace feasy
         void run();
 
     private:
-        Ref<ApplicationState> m_appState{nullptr};
+        Ref<ApplicationState> m_appState;
     };
 }
