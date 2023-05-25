@@ -15,3 +15,5 @@ SET links=/link /LIBPATH:%VULKAN_SDK%/Lib vulkan-1.lib /LIBPATH:%SDL_SDK%/lib/x6
 SET defines=/D DEBUG /D FEASY_EXPORT /D _CRT_SECURE_NO_WARNINGS
 
 cl %cfilenames% %compilerFlags% %includes% %defines% %links% /DLL /OUT:../bin/%assembly%.dll
+
+move /Y *.obj ..\bin-int\

@@ -15,3 +15,5 @@ SET links=/link /LIBPATH:../bin/ engine.lib
 SET defines=/D DEBUG /D FEASY_IMPORT -D_CRT_SECURE_NO_WARNINGS
 
 cl %cfilenames% %compilerFlags% %includes% %defines% %links% /OUT:../bin/%assembly%.exe
+
+move /Y *.obj ..\bin-int\
