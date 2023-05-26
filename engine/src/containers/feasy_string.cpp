@@ -72,3 +72,8 @@ String &feasy::String::operator+=(const String &other)
     m_string->str += other.m_string->str;
     return *this;
 }
+
+bool feasy::String::operator==(const String &other)
+{
+    return m_string == other.m_string;
+}

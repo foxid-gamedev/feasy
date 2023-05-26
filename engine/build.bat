@@ -9,11 +9,9 @@ FOR /R %%f in (*.c *.cpp) do (
 )
 
 SET assembly=engine
-SET compilerFlags=/EHsc /MDd /W4 /WX
+SET compilerFlags=/EHsc /MDd /W4 /WX /Zi
 SET includes=/Isrc /I%VULKAN_SDK%/Include /I%SDL_SDK%/include 
 SET links=/link /LIBPATH:%VULKAN_SDK%/Lib vulkan-1.lib /LIBPATH:%SDL_SDK%/lib/x64 SDL2.lib
 SET defines=/D DEBUG /D FEASY_EXPORT /D _CRT_SECURE_NO_WARNINGS
 
 cl %cfilenames% %compilerFlags% %includes% %defines% %links% /DLL /OUT:../bin/%assembly%.dll
-
-move /Y *.obj ..\bin-int\

@@ -1,8 +1,6 @@
 #include <feasy.hpp>
 #include <entry.hpp>
 
-#include <iostream>
-
 class SandboxGame : public feasy::Game
 {
 public:
@@ -10,7 +8,6 @@ public:
 
     void init() override
     {
-        std::cout << "hello";
     }
 
     void handleInput() override

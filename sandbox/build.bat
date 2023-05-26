@@ -9,11 +9,10 @@ FOR /R %%f in (*.c *.cpp) do (
 )
 
 SET assembly=sandbox
-SET compilerFlags=/EHsc /W4 /WX
+SET compilerFlags=/EHsc /W4 /WX /Zi
 SET includes=/Isrc /I../engine/src
 SET links=/link /LIBPATH:../bin/ engine.lib
 SET defines=/D DEBUG /D FEASY_IMPORT -D_CRT_SECURE_NO_WARNINGS
 
 cl %cfilenames% %compilerFlags% %includes% %defines% %links% /OUT:../bin/%assembly%.exe
 
-move /Y *.obj ..\bin-int\

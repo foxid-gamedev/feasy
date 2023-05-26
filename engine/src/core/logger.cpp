@@ -31,7 +31,7 @@ void FEASY_API feasy::log::_log(Level level, const char *msg, const char *file, 
 	vprintf(msg, args);
 	va_end(args);
 
-	std::cout << " file: " << file << " line: " << line;
+	std::cout << " >>[ file: " << file << " line: " << line << " ]<<";
 
 	// Reset color
 	std::cout << "\033[0m" << std::endl;

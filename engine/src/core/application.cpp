@@ -8,18 +8,10 @@ using namespace feasy;
 
 void Application::create(Game *gameInstance)
 {
+    FEASY_LOG_INFO("Create Application Layer...");
     m_appState = createRef<ApplicationState>();
 
     m_appState->gameInstance = gameInstance;
-
-    // Logger::initialize(LogLevel::DEBUG);
-
-    FEASY_LOG_FATAL("test fatal msg: %f", 3.14f);
-    FEASY_LOG_ERROR("test error msg: %f", 3.14f);
-    FEASY_LOG_WARN("test warn msg: %f", 3.14f);
-    FEASY_LOG_INFO("test info msg: %f", 3.14f);
-    FEASY_LOG_DEBUG("test debug msg: %f", 3.14f);
-    FEASY_LOG_TRACE("test fatal msg: %f", 3.14f);
 
     m_appState->isRunning = true;
 
@@ -34,9 +26,11 @@ void Application::create(Game *gameInstance)
 void Application::run()
 {
     // init
+    FEASY_LOG_INFO("Init Game...");
     auto game = m_appState->gameInstance;
     game->init();
 
+    FEASY_LOG_INFO("Start Game-Loop...");
     while (m_appState->isRunning)
     {
         // input handling
@@ -58,6 +52,11 @@ void Application::run()
         game->render();
     }
 
+    FEASY_LOG_INFO("Application stopped.");
     // cleanup
     m_appState->platform->destroy();
+
+    FEASY_LOG_INFO("Platform destroyed.");
+
+    FEASY_LOG_INFO("Exited Game!");
 }

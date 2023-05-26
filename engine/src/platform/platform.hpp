@@ -7,6 +7,11 @@
 
 namespace feasy
 {
+    struct RenderState
+    {
+        void *contextHandle;
+    };
+
     struct PlatformState
     {
         void *handle;
@@ -21,10 +26,11 @@ namespace feasy
         void create(i32 width, i32 height, const String &app_name);
         void destroy();
 
-        const PlatformState &getState() const { return *m_state; }
+        const PlatformState &getState() const { return *m_platformState; }
 
     private:
-        Ref<PlatformState> m_state;
+        Ref<PlatformState> m_platformState;
+        Ref<RenderState> m_renderState;
     };
 
 }

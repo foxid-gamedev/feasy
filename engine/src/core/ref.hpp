@@ -1,6 +1,7 @@
 #pragma once
 
 #include "feasy.hpp"
+#include "platform/feasy_allocator.hpp"
 #include <utility>
 
 namespace feasy
@@ -11,16 +12,20 @@ namespace feasy
 	public:
 		Ref()
 		{
-			m_ptr = new T();
-			m_count = new i32;
+			// m_ptr = new T();
+			m_ptr = Allocator::allocate<T>();
+
+			// m_count = new i32;
+			m_count = Allocator::allocate<i32>();
 			*m_count = 1;
 		}
 
 		template <typename... Args>
 		Ref(Args &&...args)
 		{
-			m_ptr = new T(std::forward<Args>(args)...);
-			m_count = new i32;
+			// m_ptr = new T(std::forward<Args>(args)...);
+			m_ptr = Allocator::allocate<T>(std::forward<Args>(args)...);
+			m_count = Allocator::allocate<i32>();
 			*m_count = 1;
 		}
 
@@ -35,7 +40,7 @@ namespace feasy
 				return;
 			m_ptr = other.m_ptr;
 			m_count = other.m_count;
-			increment();
+			this->increment();
 		}
 
 		Ref(Ref &&other) noexcept
@@ -51,12 +56,9 @@ namespace feasy
 		{
 			if (this == &other)
 				return *this;
-
 			m_ptr = other.m_ptr;
 			m_count = other.m_count;
-			other.m_ptr = nullptr;
-			other.m_count = nullptr;
-
+			this->increment();
 			return *this;
 		}
 
@@ -112,10 +114,12 @@ namespace feasy
 					return;
 				}
 
-				delete m_ptr;
-				delete m_count;
-				m_ptr = nullptr;
-				m_count = nullptr;
+				Allocator::deallocate(m_ptr);
+				Allocator::deallocate(m_count);
+				// delete m_ptr;
+				// delete m_count;
+				// m_ptr = nullptr;
+				// m_count = nullptr;
 			}
 		}
 

@@ -7,8 +7,14 @@
             "request": "launch",
             "program": "${workspaceFolder}/bin/sandbox.exe",
             "cwd": "${workspaceFolder}/bin/",
-            "console":"externalTerminal",
-            "stopAtEntry": false
+            "console": "externalTerminal",
+            "stopAtEntry": false,
+            "symbolOptions": {
+                "searchPaths": [
+                    "${workspacefolder}/bin/"
+                ],
+                "searchMicrosoftSymbolServer": false,
+            }
         }
     ]
 }
