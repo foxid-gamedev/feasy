@@ -6,12 +6,12 @@ void FEASY_API feasy::log::_log(Level level, const char *msg, const char *file, 
 {
 
 	const char *level_names[] = {
-		"[FATAL:] ",
-		"[ERROR:] ",
-		"[WARN:] ",
-		"[DEBUG:] ",
-		"[INFO:] ",
-		"[TRACE:] ",
+		"FATAL: ",
+		"ERROR: ",
+		"WARN: ",
+		"DEBUG: ",
+		"INFO: ",
+		"TRACE: ",
 	};
 
 	const char *color_codes[] = {
@@ -23,15 +23,26 @@ void FEASY_API feasy::log::_log(Level level, const char *msg, const char *file, 
 		"\033[0;37m", // White (Trace)
 	};
 
+#ifdef FEASY_EXPORT
+	constexpr const char *OWNER = "FEASY ENGINE: ";
+#else
+	constexpr const char *OWNER = "FEASY APP: ";
+#endif
+
 	// Print log message with color
-	std::cout << color_codes[static_cast<i32>(level)] << level_names[static_cast<i32>(level)];
+	std::cout << color_codes[static_cast<i32>(level)] << "[" << OWNER << level_names[static_cast<i32>(level)];
+
+	if (level < Level::debug)
+	{
+		std::cout << "FILE: '" << file << "' LINE: " << line;
+	}
+
+	std::cout << "]: ";
 
 	va_list args;
 	va_start(args, line);
 	vprintf(msg, args);
 	va_end(args);
-
-	std::cout << " >>[ file: " << file << " line: " << line << " ]<<";
 
 	// Reset color
 	std::cout << "\033[0m" << std::endl;

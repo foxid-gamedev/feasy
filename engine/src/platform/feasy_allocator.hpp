@@ -22,12 +22,6 @@ namespace feasy
 			return new T(std::forward<Args>(args)...);
 		}
 
-		// template <typename T, typename... Args>
-		// Ref<T> createRef(Args &&...args)
-		// {
-		// 	return Ref<T>(std::forward<Args>(args)...);
-		// }
-
 		template <typename T>
 		inline static T *allocateBlock(i64 block)
 		{
@@ -58,9 +52,17 @@ namespace feasy
 		inline static T *reallocateBlock(T *data, i64 block)
 		{
 			T *newData = allocateBlock<T>(block);
-			std::memcpy(n, newData, block);
-			deallocateBlock(newData);
-			return n;
+			std::memcpy(newData, data, block);
+			deallocateBlock(data);
+			return newData;
+		}
+
+		template <typename T>
+		inline static T *copyBlock(T *data, i64 block)
+		{
+			T *newData = allocateBlock<T>(block);
+			std::memcpy(newData, data, block);
+			return newData;
 		}
 	};
 }
