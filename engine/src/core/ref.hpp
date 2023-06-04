@@ -12,21 +12,25 @@ namespace feasy
 	public:
 		Ref()
 		{
-			// m_ptr = new T();
 			m_ptr = Allocator::allocate<T>();
-
-			// m_count = new i32;
 			m_count = Allocator::allocate<i32>();
 			*m_count = 1;
 		}
 
-		template <typename... Args>
-		Ref(Args &&...args)
+		Ref(T *ptr, i32 *count)
 		{
-			// m_ptr = new T(std::forward<Args>(args)...);
-			m_ptr = Allocator::allocate<T>(std::forward<Args>(args)...);
-			m_count = Allocator::allocate<i32>();
-			*m_count = 1;
+			m_ptr = ptr;
+			m_count = count;
+		}
+
+		template <typename... Args>
+		static Ref<T> CreateRef(Args &&...args)
+		{
+			T *ptr = Allocator::allocate<T>(std::forward<Args>(args)...);
+			i32 *count = Allocator::allocate<i32>();
+			*(count) = 1;
+
+			return Ref{ptr, count};
 		}
 
 		~Ref()
@@ -116,10 +120,6 @@ namespace feasy
 
 				Allocator::deallocate(m_ptr);
 				Allocator::deallocate(m_count);
-				// delete m_ptr;
-				// delete m_count;
-				// m_ptr = nullptr;
-				// m_count = nullptr;
 			}
 		}
 
@@ -136,6 +136,6 @@ namespace feasy
 	template <typename T, typename... Args>
 	Ref<T> createRef(Args &&...args)
 	{
-		return Ref<T>(std::forward<Args>(args)...);
+		return Ref::CreateRef<T>(std::forward<Args>(args)...);
 	}
 }
